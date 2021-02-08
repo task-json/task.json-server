@@ -36,32 +36,22 @@ router.get("/", async ctx => {
 
 // Upload only
 router.put("/", async ctx => {
-	try {
-		const taskJson = JSON.parse(ctx.request.body);
-		if (!isTaskJson(taskJson)) {
-			throw new HttpError(400, "Invalid TaskJson format");
-		}
-		localTaskJson = taskJson;
-		ctx.status = 200;
+	const taskJson = ctx.request.body;
+	if (!isTaskJson(taskJson)) {
+		throw new HttpError(400, "Invalid TaskJson format");
 	}
-	catch (error) {
-		throw new HttpError(400, "Invalid JSON format");
-	}
+	localTaskJson = taskJson;
+	ctx.status = 200;
 });
 
 // Sync
 router.patch("/", async ctx => {
-	try {
-		const taskJson = JSON.parse(ctx.request.body);
-		if (!isTaskJson(taskJson)) {
-			throw new HttpError(400, "Invalid TaskJson format");
-		}
-		localTaskJson = mergeTaskJson(localTaskJson, taskJson);
-		ctx.body = localTaskJson;
+	const taskJson = ctx.request.body;
+	if (!isTaskJson(taskJson)) {
+		throw new HttpError(400, "Invalid TaskJson format");
 	}
-	catch (error) {
-		throw new HttpError(400, "Invalid JSON format");
-	}
+	localTaskJson = mergeTaskJson(localTaskJson, taskJson);
+	ctx.body = localTaskJson;
 });
 
 // Clear remote

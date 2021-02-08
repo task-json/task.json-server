@@ -1,5 +1,5 @@
 import app from "./app";
-import config from "./config";
+import { config } from "./utils/config";
 
 app.listen(3000, config.address);
 

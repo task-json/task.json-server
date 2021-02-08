@@ -5,6 +5,7 @@ import * as logger from 'koa-logger';
 import { HttpError } from "./types/error";
 import { initTaskJson, mergeTaskJson, isTaskJson } from "task.json";
 import { taskJsonTypeGuard } from "./middleware/type-guard";
+import { loadTaskJson, saveTaskJson } from './utils/task';
 
 const app = new Koa();
 app.use(bodyParser());
@@ -28,7 +29,7 @@ app.use(async (ctx, next) => {
 
 const router = new Router();
 // Local store
-let localTaskJson = initTaskJson();
+let localTaskJson = loadTaskJson();
 
 // Download only
 router.get("/", async ctx => {
@@ -39,6 +40,7 @@ router.get("/", async ctx => {
 router.put("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
 	localTaskJson = taskJson;
+	saveTaskJson(localTaskJson);
 	ctx.status = 200;
 });
 
@@ -46,12 +48,14 @@ router.put("/", taskJsonTypeGuard, async ctx => {
 router.patch("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
 	localTaskJson = mergeTaskJson(localTaskJson, taskJson);
+	saveTaskJson(localTaskJson);
 	ctx.body = localTaskJson;
 });
 
 // Clear remote
 router.delete("/", async ctx => {
 	localTaskJson = initTaskJson();
+	saveTaskJson(localTaskJson);
 	ctx.status = 200;
 });
 

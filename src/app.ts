@@ -2,7 +2,6 @@ import * as Koa from 'koa';
 import * as Router from '@koa/router';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
-import config from "./config";
 import { HttpError } from "./types/error";
 import { initTaskJson, mergeTaskJson, isTaskJson } from "task.json";
 
@@ -75,6 +74,4 @@ router.delete("/", async ctx => {
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(3000, config.address);
-
-console.log(`Server listening on http://${config.address}:3000`);
+export default app;

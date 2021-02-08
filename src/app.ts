@@ -4,6 +4,7 @@ import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
 import { HttpError } from "./types/error";
 import { initTaskJson, mergeTaskJson, isTaskJson } from "task.json";
+import { taskJsonTypeGuard } from "./middleware/type-guard";
 
 const app = new Koa();
 app.use(bodyParser());
@@ -35,21 +36,15 @@ router.get("/", async ctx => {
 });
 
 // Upload only
-router.put("/", async ctx => {
+router.put("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
-	if (!isTaskJson(taskJson)) {
-		throw new HttpError(400, "Invalid TaskJson format");
-	}
 	localTaskJson = taskJson;
 	ctx.status = 200;
 });
 
 // Sync
-router.patch("/", async ctx => {
+router.patch("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
-	if (!isTaskJson(taskJson)) {
-		throw new HttpError(400, "Invalid TaskJson format");
-	}
 	localTaskJson = mergeTaskJson(localTaskJson, taskJson);
 	ctx.body = localTaskJson;
 });
@@ -59,7 +54,6 @@ router.delete("/", async ctx => {
 	localTaskJson = initTaskJson();
 	ctx.status = 200;
 });
-
 
 app.use(router.routes());
 app.use(router.allowedMethods());

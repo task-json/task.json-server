@@ -5,6 +5,39 @@ import * as supertest from "supertest";
 // Use agent to persist sessions
 const agent = supertest.agent(app.callback());
 
+describe("Session API", () => {
+	let token = "";
+
+	test("empty password", async () => {
+		const resp = await agent.post("/session");
+		expect(resp.status).toEqual(400);
+	});
+
+	test("wrong password", async () => {
+		const resp = await agent.post("/session")
+			.send({ password: "test" });
+		expect(resp.status).toEqual(401);
+	});
+
+	test("invalid logout", async () => {
+		const resp = await agent.delete("/session");
+		expect(resp.status).toEqual(401);
+	});
+
+	test("login", async () => {
+		const resp = await agent.post("/session")
+			.send({ password: "admin" });
+		expect(resp.status).toEqual(200);
+		token = resp.body.token;
+	});
+
+	test("logout", async () => {
+		const resp = await agent.delete("/session")
+			.set("Authorization", `Bearer ${token}`);
+		expect(resp.status).toEqual(200);
+	});
+});
+
 describe("TaskJson API", () => {
 	const tj1: TaskJson = {
 		todo: [
@@ -24,7 +57,6 @@ describe("TaskJson API", () => {
 		done: [],
 		removed: []
 	};
-
 	const tj2: TaskJson = {
 		todo: [
 			{
@@ -44,31 +76,44 @@ describe("TaskJson API", () => {
 		],
 		removed: []
 	};
+	let token = "";
+
+	test("login", async () => {
+		const resp = await agent.post("/session")
+			.send({ password: "admin" });
+		expect(resp.status).toEqual(200);
+		token = resp.body.token;
+	});
 
 	test("upload TaskJson", async () => {
 		const resp = await agent.put("/")
+			.set("Authorization", `Bearer ${token}`)
 			.send(tj1);
 		expect(resp.status).toEqual(200);
 	});
 
 	test("get TaskJson", async () => {
-		const resp = await agent.get("/");
+		const resp = await agent.get("/")
+			.set("Authorization", `Bearer ${token}`);
 		expect(resp.status).toEqual(200);
 		expect(resp.body).toEqual(tj1);
 	});
 
 	test("sync TaskJson", async () => {
 		const resp = await agent.patch("/")
+			.set("Authorization", `Bearer ${token}`)
 			.send(tj2);
 		expect(resp.status).toEqual(200);
 		expect(resp.body).toEqual(mergeTaskJson(tj1, tj2));
 	});
 
 	test("delete TaskJson", async () => {
-		const resp1 = await agent.delete("/");
+		const resp1 = await agent.delete("/")
+			.set("Authorization", `Bearer ${token}`);
 		expect(resp1.status).toEqual(200);
 
-		const resp2 = await agent.get("/");
+		const resp2 = await agent.get("/")
+			.set("Authorization", `Bearer ${token}`);
 		expect(resp2.status).toEqual(200);
 		expect(resp2.body).toEqual(initTaskJson());
 	});
@@ -91,16 +136,18 @@ describe("TaskJson API", () => {
 		};
 
 		const resp1 = await agent.put("/")
+			.set("Authorization", `Bearer ${token}`)
 			.send(tj3);
 		expect(resp1.status).toEqual(400);
 
 		const resp2 = await agent.patch("/")
+			.set("Authorization", `Bearer ${token}`)
 			.send(tj4);
 		expect(resp2.status).toEqual(400);
 
 		// Empty body
-		const resp3 = await agent.patch("/");
+		const resp3 = await agent.patch("/")
+			.set("Authorization", `Bearer ${token}`);
 		expect(resp3.status).toEqual(400);
 	});
 });
-

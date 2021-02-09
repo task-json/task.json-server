@@ -7,6 +7,7 @@ import { initTaskJson, mergeTaskJson, isTaskJson } from "task.json";
 import { taskJsonTypeGuard } from "./middleware/type-guard";
 import { loadTaskJson, saveTaskJson } from './utils/task';
 import { session, auth } from "./middleware/auth";
+import sessionRouter from "./session";
 
 const app = new Koa();
 app.use(bodyParser());
@@ -34,13 +35,18 @@ const router = new Router();
 // Local store
 let localTaskJson = loadTaskJson();
 
+router.use("/session", sessionRouter.routes());
+
+// Routes below need authenticating
+router.use(auth);
+
 // Download only
-router.get("/", auth, async ctx => {
+router.get("/", async ctx => {
 	ctx.body = localTaskJson;
 });
 
 // Upload only
-router.put("/", auth, taskJsonTypeGuard, async ctx => {
+router.put("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
 	localTaskJson = taskJson;
 	saveTaskJson(localTaskJson);
@@ -48,7 +54,7 @@ router.put("/", auth, taskJsonTypeGuard, async ctx => {
 });
 
 // Sync
-router.patch("/", auth, taskJsonTypeGuard, async ctx => {
+router.patch("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
 	localTaskJson = mergeTaskJson(localTaskJson, taskJson);
 	saveTaskJson(localTaskJson);
@@ -56,7 +62,7 @@ router.patch("/", auth, taskJsonTypeGuard, async ctx => {
 });
 
 // Clear remote
-router.delete("/", auth, async ctx => {
+router.delete("/", async ctx => {
 	localTaskJson = initTaskJson();
 	saveTaskJson(localTaskJson);
 	ctx.status = 200;

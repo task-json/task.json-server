@@ -17,7 +17,7 @@ router.post("/", async ctx => {
 		tokens.push(token);
 		if (tokens.length > config.maxClients)
 			tokens.shift();
-		ctx.body = token;
+		ctx.body = { token };
 	}
 	else {
 		throw new HttpError(401, "Wrong password");
@@ -28,7 +28,7 @@ router.post("/", async ctx => {
 router.delete("/", auth, async ctx => {
 	const index = tokens.indexOf(ctx.token!);
 	tokens.splice(index, 1);
-	ctx.state = 200;
+	ctx.status = 200;
 });
 
 export default router;

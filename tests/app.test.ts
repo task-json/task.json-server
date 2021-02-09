@@ -85,6 +85,18 @@ describe("TaskJson API", () => {
 		token = resp.body.token;
 	});
 
+	// Delete TaskJson from last test
+	test("delete TaskJson", async () => {
+		const resp1 = await agent.delete("/")
+			.set("Authorization", `Bearer ${token}`);
+		expect(resp1.status).toEqual(200);
+
+		const resp2 = await agent.get("/")
+			.set("Authorization", `Bearer ${token}`);
+		expect(resp2.status).toEqual(200);
+		expect(resp2.body).toEqual(initTaskJson());
+	});
+
 	test("upload TaskJson", async () => {
 		const resp = await agent.put("/")
 			.set("Authorization", `Bearer ${token}`)

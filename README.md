@@ -5,14 +5,30 @@ It supports automatic conflicts handling and merging.
 
 ## Installation
 
+### npm
+
 ```
 npm i -g task.json-server
 ```
 
+### Docker
+
+```
+docker pull dcsunset/task.json-server
+```
+
 ## Usage
+
+If installed from npm:
 
 ```
 DATA_PATH=$PWD/task.json task.json-server
+```
+
+If installed from docker:
+
+```
+docker run
 ```
 
 Configurations can be set via environment variables.

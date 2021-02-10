@@ -8,5 +8,5 @@ export const config = {
 	dataPath: process.env.DATA_PATH
 		|| (isProd ? "/task.json" : path.join(__dirname, "../../tests/task.json")),
 	password: process.env.PASSWORD || "admin",
-	maxClients: process.env.MAX_CLIENTS || 3
+	maxClients: process.env.MAX_CLIENTS ? parseInt(process.env.MAX_CLIENTS) : 3
 };

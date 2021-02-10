@@ -1,13 +1,21 @@
 {
   "name": "task.json-server",
   "version": "0.0.0",
-  "description": "Sync server for task.json ",
+  "description": "Sync server for task.json",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts",
     "build": "rm -rf dist && tsc -p ./tsconfig.build.json",
     "start": "NODE_ENV=production node ./dist/server.js",
     "test": "jest"
   },
+  "bin": {
+    "task.json-server": "./dist/server.js"
+  },
+  "files": [
+    "package*.json",
+    "dist/*",
+    "LICENSE"
+  ],
   "keywords": [
     "task.json",
     "server",

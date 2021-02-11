@@ -28,7 +28,7 @@ DATA_PATH=$PWD/task.json task.json-server
 If installed from docker:
 
 ```
-docker run
+docker run -p 3000:3000 -v $PWD/task.json:/task.json task.json-server
 ```
 
 Configurations can be set via environment variables.

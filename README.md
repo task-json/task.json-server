@@ -1,5 +1,11 @@
 # task.json-server
 
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/dcsunset/task.json-server)](https://hub.docker.com/r/dcsunset/task.json-server)
+[![Docker Image Size](https://badgen.net/docker/size/dcsunset/task.json-server)](https://hub.docker.com/r/dcsunset/task.json-server)
+[![npm version](https://badgen.net/npm/v/task.json-server)](https://www.npmjs.com/package/task.json-server)
+[![license](https://badgen.net/github/license/dcsunset/task.json-server)](https://github.com/DCsunset/task.json-server)
+
+
 Sync server for [task.json](https://github.com/DCsunset/task.json).
 It supports automatic conflicts handling and merging.
 

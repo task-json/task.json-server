@@ -3,7 +3,8 @@ import * as Router from '@koa/router';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
 import { HttpError } from "./types/error";
-import { initTaskJson, mergeTaskJson, isTaskJson } from "task.json";
+import { initTaskJson, mergeTaskJson } from "task.json";
+import * as cors from "@koa/cors";
 import { taskJsonTypeGuard } from "./middleware/type-guard";
 import { loadTaskJson, saveTaskJson } from './utils/task';
 import { session, auth } from "./middleware/auth";
@@ -12,6 +13,7 @@ import sessionRouter from "./session";
 const app = new Koa();
 app.use(bodyParser());
 app.use(logger());
+app.use(cors());
 
 // Universal error handler (this middleware should be before other routes)
 app.use(async (ctx, next) => {

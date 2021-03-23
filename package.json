@@ -1,6 +1,6 @@
 {
   "name": "task.json-server",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Sync server for task.json",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts",

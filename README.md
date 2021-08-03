@@ -28,13 +28,13 @@ docker pull dcsunset/task.json-server
 If installed from npm:
 
 ```
-NODE_ENV=production DATA_PATH=$PWD/task.json task.json-server
+NODE_ENV=production ROOT_PATH=$PWD/data task.json-server
 ```
 
 If installed from docker:
 
 ```
-docker run -d --name task.json-server -p 3000:3000 -v $PWD/task.json:/task.json dcsunset/task.json-server
+docker run -d --name task.json-server -p 3000:3000 -v $PWD/data:/data dcsunset/task.json-server
 ```
 
 Configurations can be set via environment variables.

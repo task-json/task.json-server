@@ -116,7 +116,7 @@ describe("TaskJson API", () => {
 			.set("Authorization", `Bearer ${token}`)
 			.send(tj2);
 		expect(resp.status).toEqual(200);
-		expect(resp.body).toEqual(mergeTaskJson(tj1, tj2));
+		expect(resp.body.data).toEqual(mergeTaskJson(tj1, tj2));
 	});
 
 	test("delete TaskJson", async () => {

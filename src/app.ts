@@ -3,7 +3,7 @@ import * as Router from '@koa/router';
 import * as bodyParser from 'koa-bodyparser';
 import * as logger from 'koa-logger';
 import { HttpError } from "./types/error";
-import { initTaskJson, mergeTaskJson } from "task.json";
+import { initTaskJson, mergeTaskJson, compareMergedTaskJson } from "task.json";
 import * as cors from "@koa/cors";
 import { taskJsonTypeGuard } from "./middleware/type-guard";
 import { loadTaskJson, saveTaskJson } from './utils/task';
@@ -58,9 +58,17 @@ router.put("/", taskJsonTypeGuard, async ctx => {
 // Sync
 router.patch("/", taskJsonTypeGuard, async ctx => {
 	const taskJson = ctx.request.body;
-	localTaskJson = mergeTaskJson(localTaskJson, taskJson);
+	const merged = mergeTaskJson(localTaskJson, taskJson);
+	const stat = {
+		client: compareMergedTaskJson(taskJson, merged),
+		server: compareMergedTaskJson(localTaskJson, merged)
+	};
+	localTaskJson = merged;
 	saveTaskJson(localTaskJson);
-	ctx.body = localTaskJson;
+	ctx.body = {
+		data: localTaskJson,
+		stat
+	};
 });
 
 // Clear remote

@@ -27,8 +27,8 @@ jobs:
           images: dcsunset/task.json-server
           tags: |
             type=ref,event=branch,latest=true
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{version}},latest=true
+            type=semver,pattern={{major}}.{{minor}},latest=true
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v2

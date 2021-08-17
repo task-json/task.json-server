@@ -42,13 +42,13 @@ describe("TaskJson API", () => {
 	const tj1: TaskJson = {
 		todo: [
 			{
-				uuid: "1",
+				id: "1",
 				text: "Hello, world 1",
 				start: new Date("2000-01-01").toISOString(),
 				modified: new Date("2010-07-07").toISOString(),
 			},
 			{
-				uuid: "2",
+				id: "2",
 				text: "Hello, world 2",
 				start: new Date("2000-01-02").toISOString(),
 				modified: new Date("2020-07-07").toISOString()
@@ -60,7 +60,7 @@ describe("TaskJson API", () => {
 	const tj2: TaskJson = {
 		todo: [
 			{
-				uuid: "1",
+				id: "1",
 				text: "Hello, world 1 modified",
 				start: new Date("2000-01-01").toISOString(),
 				modified: new Date("2020-07-07").toISOString()
@@ -68,7 +68,7 @@ describe("TaskJson API", () => {
 		],
 		done: [
 			{
-				uuid: "4",
+				id: "4",
 				text: "Hello, world 4",
 				start: new Date("2000-01-04").toISOString(),
 				modified: new Date("2020-07-07").toISOString()
@@ -138,7 +138,7 @@ describe("TaskJson API", () => {
 		const tj4 = {
 			todo: [
 				{
-					uuid: "4",
+					id: "4",
 					text: "Hello, world 4",
 					start: new Date("2000-01-04").toISOString(),
 				}

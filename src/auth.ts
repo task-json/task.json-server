@@ -52,14 +52,14 @@ function decrypt(data: string, key: string) {
  * @see {isTokenPayload} ts-auto-guard:type-guard
  */
 export type TokenPayload = {
-	userId: string,
+	user: string,
 	// ISO string
 	expiryDate: string
 }
 
-export function generateToken(userId: string) {
+export function generateToken(user: string) {
 	const payload: TokenPayload = {
-		userId,
+		user,
 		expiryDate: DateTime.now().plus({ days: config.tokenMaxAge }).toISO()
 	};
 
@@ -76,7 +76,7 @@ export function verifyToken(token: string) {
 		throw new Error("token expired");
 	}
 
-	return payload.userId;
+	return payload.user;
 }
 
 export function getTokenFromHeader(header?: string) {
@@ -95,8 +95,11 @@ export function getTokenFromHeader(header?: string) {
 export const authHandler: preHandlerAsyncHookHandler = async (request, reply) => {
 	try {
 		const token = getTokenFromHeader(request.headers.authorization);
-		const userId = verifyToken(token);
-		request.userId = userId;
+		const user = verifyToken(token);
+		if (!config.users.includes(user)) {
+			throw new Error(`user '${user}' does not exist`);
+		}
+		request.user = user;
 	}
 	catch (err: any) {
 		console.error(err.message);

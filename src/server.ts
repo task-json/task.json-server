@@ -7,7 +7,7 @@ const fastify = Fastify({ logger: true });
 // Type definition for 
 declare module 'fastify' {
   interface FastifyRequest {
-    userId: string
+    user: string
   }
 }
 
@@ -20,12 +20,12 @@ fastify.register(async (instance, opts) => {
 
 // Data routes
 fastify.register(async (instance, opts) => {
-  // Add userId field to request object prototype to make it faster
-  instance.decorateRequest("userId", "");
+  // Add user field to request object prototype to make it faster
+  instance.decorateRequest("user", "");
 
   // one-way download
   instance.get("/", { preHandler: authHandler }, async (request, reply) => {
-    const data = readData(request.userId);
+    const data = readData(request.user);
     return { data };
   });
   // one-way upload

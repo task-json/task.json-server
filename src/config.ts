@@ -11,7 +11,9 @@ export type Config = {
 	/// Max age of token in days
 	tokenMaxAge: number,
 	/// Secret key to generate and encrypt the token
-	tokenKey: string
+	tokenKey: string,
+	/// Valid users (user is a secret ID. Recommend using UUID)
+	users: string[]
 }
 
 export const rootPath = process.env.TASK_JSON_SERVER_PATH ?? "";

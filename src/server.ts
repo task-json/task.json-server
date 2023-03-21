@@ -21,8 +21,10 @@ import { config } from "./utils/config";
 
 const start = async () => {
   try {
-		console.log(`Server listening on http://${config.host}:${config.port}`);
-    await fastify.listen({ port: 3000 })
+    await fastify.listen({
+			host: config.host,
+			port: config.port
+		})
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)

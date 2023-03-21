@@ -15,88 +15,140 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import fastify from "../src/app";
-import * as supertest from "supertest";
+import app from "../src/app";
 
 // Use agent to persist sessions
-const agent = supertest.agent(fastify.server);
-
 describe("Session API", () => {
 	let token = "";
 
 	test("empty password", async () => {
-		const resp = await agent.post("/session");
-		expect(resp.status).toEqual(400);
+		const resp = await app.inject({
+			method: "POST",
+			url: "/session"
+		});
+		expect(resp.statusCode).toEqual(400);
 	});
 
 	test("wrong password", async () => {
-		const resp = await agent.post("/session")
-			.send({ password: "test" });
-		expect(resp.status).toEqual(401);
+		const resp = await app.inject({
+			method: "POST",
+			url: "/session",
+			payload: { password: "test" }			
+		});
+		expect(resp.statusCode).toEqual(401);
 	});
 
 	test("login", async () => {
-		const resp = await agent.post("/session")
-			.send({ password: "admin" });
-		expect(resp.status).toEqual(200);
-		token = resp.body.token;
+		const resp = await app.inject({
+			method: "POST",
+			url: "/session",
+			payload: { password: "admin" }			
+		});
+		expect(resp.statusCode).toEqual(200);
+
+		const data = resp.json();
+		expect("token" in data).toBe(true);
+		token = resp.json().token;
 	});
 
 	test("access data", async () => {
-		const resp = await agent.get("/")
-			.set("Authorization", `Bearer ${token}`);
-		expect(resp.status).toEqual(200);
+		const resp = await app.inject({
+			method: "GET",
+			url: "/",
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		});
+		expect(resp.statusCode).toEqual(200);
 	});
 });
 
 describe("Data API", () => {
 	let token = "";
 	// Can be any string
-	const tj = "test-tj"
+	const tj = "test-data"
 
 	test("login", async () => {
-		const resp = await agent.post("/session")
-			.send({ password: "admin" });
-		expect(resp.status).toEqual(200);
-		token = resp.body.token;
+		const resp = await app.inject({
+			method: "POST",
+			url: "/session",
+			payload: { password: "admin" }
+		});
+		expect(resp.statusCode).toEqual(200);
+
+		const data = resp.json();
+		expect("token" in data).toBe(true);
+		token = resp.json().token;
 	});
 
 	// Delete TaskJson from last test
 	test("delete", async () => {
-		const resp1 = await agent.delete("/")
-			.set("Authorization", `Bearer ${token}`);
-		expect(resp1.status).toEqual(200);
-
-		const resp2 = await agent.get("/")
-			.set("Authorization", `Bearer ${token}`);
-		expect(resp2.status).toEqual(200);
+		const resp1 = await app.inject({
+			method: "DELETE",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		});
+		expect(resp1.statusCode).toEqual(200);
+		
+		const resp2 = await app.inject({
+			method: "GET",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		});
+		expect(resp2.statusCode).toEqual(200);
 		// Empty response
-		expect(resp2.body).toEqual({});
+		expect(resp2.json()).toEqual({});
 	});
 
 	test("upload", async () => {
-		const resp = await agent.put("/")
-			.set("Authorization", `Bearer ${token}`)
-			.send(tj);
-		expect(resp.status).toEqual(200);
+		const resp = await app.inject({
+			method: "PUT",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			},
+			payload: {
+				data: tj
+			}
+		});
+		expect(resp.statusCode).toEqual(200);
 	});
 
 	test("download", async () => {
-		const resp = await agent.get("/")
-			.set("Authorization", `Bearer ${token}`);
-		expect(resp.status).toEqual(200);
-		expect(resp.body).toEqual({ data: tj });
+		const resp = await app.inject({
+			method: "GET",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		});
+		expect(resp.statusCode).toEqual(200);
+		expect(resp.json()).toEqual({ data: tj });
 	});
 
 	test("delete", async () => {
-		const resp1 = await agent.delete("/")
-			.set("Authorization", `Bearer ${token}`);
-		expect(resp1.status).toEqual(200);
+		const resp1 = await app.inject({
+			method: "DELETE",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		});
+		expect(resp1.statusCode).toEqual(200);
 
-		const resp2 = await agent.get("/")
-			.set("Authorization", `Bearer ${token}`);
-		expect(resp2.status).toEqual(200);
+		const resp2 = await app.inject({
+			method: "GET",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			}
+		});
+		expect(resp2.statusCode).toEqual(200);
 		// Empty response
-		expect(resp2.body).toEqual({});
+		expect(resp2.json()).toEqual({});
 	});
 });

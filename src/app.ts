@@ -20,7 +20,7 @@ import fastifyJwt from "@fastify/jwt";
 
 import { HttpError } from "./types/error";
 import { loadData, saveData, deleteData } from './utils/data';
-import { config } from "./utils/config.js";
+import { config } from "./utils/config";
 
 const fastify = Fastify({
 	logger: true

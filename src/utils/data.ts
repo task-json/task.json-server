@@ -16,8 +16,8 @@
  */
 
 import { config } from "./config";
-import * as fs from "node:fs";
-import * as path from "node:path";
+import fs from "fs";
+import path from "path";
 
 export function saveData(taskJson: string) {
 	const dataPath = path.join(config.rootPath, "task.json");

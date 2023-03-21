@@ -7,4 +7,4 @@ RUN apk --no-cache add nodejs npm && \
 
 ENV NODE_ENV=production
 
-CMD ["task.json-server"]
+CMD ["tj-server"]

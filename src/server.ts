@@ -16,9 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import app from "./app";
+import fastify from "./app";
 import { config } from "./utils/config";
 
-app.listen(config.port, config.address);
-
-console.log(`Server listening on http://${config.address}:${config.port}`);
+const start = async () => {
+  try {
+		console.log(`Server listening on http://${config.host}:${config.port}`);
+    await fastify.listen({ port: 3000 })
+  } catch (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
+}
+start()

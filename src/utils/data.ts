@@ -15,14 +15,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import * as Koa from "koa";
-import { HttpError } from "../types/error";
-import { isTaskJson } from "task.json";
+import { config } from "./config";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-export const taskJsonTypeGuard = async (ctx: Koa.Context, next: () => Promise<any>) => {
-	const taskJson = ctx.request.body;
-	if (!isTaskJson(taskJson)) {
-		throw new HttpError(400, "Invalid TaskJson format");
+export function saveData(taskJson: string) {
+	const dataPath = path.join(config.rootPath, "task.json");
+
+  if (!fs.existsSync(config.rootPath)) {
+    fs.mkdirSync(config.rootPath);
+  }
+
+	fs.writeFileSync(
+		dataPath,
+		taskJson,
+		{ encoding: "utf8" }
+	);
+}
+
+export function loadData() {
+	const dataPath = path.join(config.rootPath, "task.json");
+
+	if (!fs.existsSync(dataPath)) {
+		return undefined;
 	}
-	await next();
+
+	const data = fs.readFileSync(dataPath, { encoding: "utf8" });
+	return data;
+}
+
+export function deleteData() {
+	const dataPath = path.join(config.rootPath, "task.json");
+	if (fs.existsSync(dataPath)) {
+		fs.unlinkSync(dataPath);
+	}
 }

@@ -15,87 +15,66 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import * as Koa from 'koa';
-import * as Router from '@koa/router';
-import * as bodyParser from 'koa-bodyparser';
-import * as logger from 'koa-logger';
+import Fastify from "fastify";
+import fastifyJwt from "@fastify/jwt";
+
 import { HttpError } from "./types/error";
-import { initTaskJson, mergeTaskJson, compareMergedTaskJson } from "task.json";
-import * as cors from "@koa/cors";
-import { taskJsonTypeGuard } from "./middleware/type-guard";
-import { loadTaskJson, saveTaskJson } from './utils/task';
-import { session, auth } from "./middleware/auth";
-import sessionRouter from "./session";
+import { loadData, saveData, deleteData } from './utils/data';
+import { config } from "./utils/config.js";
 
-const app = new Koa();
-app.use(bodyParser());
-app.use(logger());
-app.use(cors());
+const fastify = Fastify({
+	logger: true
+});
 
-// Universal error handler (this middleware should be before other routes)
-app.use(async (ctx, next) => {
-	try {
-		await next();
-	}
-	catch (err) {
-		if (err instanceof HttpError) {
-			ctx.throw(err.status, err.message);
-		}
-		else {
-			throw err;
-		}
+fastify.register(fastifyJwt, {
+	secret: config.jwt.secret,
+	sign: {
+		expiresIn: config.jwt.expiresIn
 	}
 });
 
-// Acquire session info
-app.use(session);
 
-const router = new Router();
-// Local store
-let localTaskJson = loadTaskJson();
-
-router.use("/session", sessionRouter.routes());
-
-// Routes below need authenticating
-router.use(auth);
-
-// Download only
-router.get("/", async ctx => {
-	ctx.body = localTaskJson;
+// Create a session (log in)
+fastify.post("/session", async (req, reply) => {
+	const { password } = (req.body as any) ?? {};
+	if (!password) {
+		throw new HttpError(400, "Password required");
+	}
+	
+	if (password === config.password) {
+		const token = fastify.jwt.sign({});
+		reply.send({ token });
+	}
+	else {
+		throw new HttpError(401, "Wrong password");
+	}
 });
 
-// Upload only
-router.put("/", taskJsonTypeGuard, async ctx => {
-	const taskJson = ctx.request.body;
-	localTaskJson = taskJson;
-	saveTaskJson(localTaskJson);
-	ctx.status = 200;
+
+// Download
+fastify.get("/", async (req, reply) => {
+	await req.jwtVerify();
+	reply.send({
+		data: loadData()
+	});
 });
 
-// Sync
-router.patch("/", taskJsonTypeGuard, async ctx => {
-	const taskJson = ctx.request.body;
-	const merged = mergeTaskJson(localTaskJson, taskJson);
-	const stat = {
-		client: compareMergedTaskJson(taskJson, merged),
-		server: compareMergedTaskJson(localTaskJson, merged)
-	};
-	localTaskJson = merged;
-	saveTaskJson(localTaskJson);
-	ctx.body = {
-		data: localTaskJson,
-		stat
-	};
+// Upload (can upload encrypted data)
+fastify.put("/", async (req, reply) => {
+	await req.jwtVerify();
+	const { data } = (req.body as any) ?? {};
+	if (data) {
+		saveData(data);
+	}
+	else {
+		throw new HttpError(400, "Data required");
+	}
 });
 
-// Clear remote
-router.delete("/", async ctx => {
-	localTaskJson = initTaskJson();
-	saveTaskJson(localTaskJson);
-	ctx.status = 200;
+// Delete
+fastify.delete("/", async (req, reply) => {
+	await req.jwtVerify();
+	deleteData();
 });
 
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-export default app;
+export default fastify;

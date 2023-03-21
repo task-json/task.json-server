@@ -20,10 +20,10 @@ import fs from "fs";
 import path from "path";
 
 export function saveData(taskJson: string) {
-	const dataPath = path.join(config.rootPath, "task.json");
+	const dataPath = path.join(config.dataPath, "task.json");
 
-  if (!fs.existsSync(config.rootPath)) {
-    fs.mkdirSync(config.rootPath);
+  if (!fs.existsSync(config.dataPath)) {
+    fs.mkdirSync(config.dataPath);
   }
 
 	fs.writeFileSync(
@@ -34,7 +34,7 @@ export function saveData(taskJson: string) {
 }
 
 export function loadData() {
-	const dataPath = path.join(config.rootPath, "task.json");
+	const dataPath = path.join(config.dataPath, "task.json");
 
 	if (!fs.existsSync(dataPath)) {
 		return undefined;
@@ -45,7 +45,7 @@ export function loadData() {
 }
 
 export function deleteData() {
-	const dataPath = path.join(config.rootPath, "task.json");
+	const dataPath = path.join(config.dataPath, "task.json");
 	if (fs.existsSync(dataPath)) {
 		fs.unlinkSync(dataPath);
 	}

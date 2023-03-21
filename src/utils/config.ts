@@ -15,19 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import * as path from "path";
-
 export const isProd = process.env.NODE_ENV === 'production';
 
 export const config = {
-	host: process.env.ADDR || (isProd ? "0.0.0.0" : "localhost"),
-	port: process.env.PORT ? parseInt(process.env.PORT) : 3000,
-	rootPath: process.env.ROOT_PATH
-		|| (isProd ? "/data" : path.join(__dirname, "../../tests")),
-	password: process.env.PASSWORD || "admin",
+	host: process.env.TJ_ADDR || (isProd ? "0.0.0.0" : "localhost"),
+	port: process.env.TJ_PORT ? parseInt(process.env.TJ_PORT) : 3000,
+	dataPath: process.env.TJ_DATA_PATH || "./data",
+	// password for login
+	password: process.env.TJ_PASSWORD || "admin",
 	jwt: {
-		secret: process.env.SECRET || "secret",
-		expiresIn: "90d",
-	},
-	maxClients: process.env.MAX_CLIENTS ? parseInt(process.env.MAX_CLIENTS) : 3
+	// secret for signing jwt
+		secret: process.env.TJ_JWT_SECRET || "secret",
+		expiresIn: process.env.TJ_JWT_EXPIRES_IN || "60d",
+	}
 };

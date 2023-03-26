@@ -4,6 +4,7 @@
   "description": "Sync server for task.json",
   "scripts": {
     "dev": "tsx ./src/server.ts",
+    "dev-https": "cd tests && caddy run",
     "build": "rm -rf dist && tsc -p ./tsconfig.build.json",
     "start": "NODE_ENV=production node ./dist/server.js",
     "test": "TJ_DATA_PATH=./tests jest"

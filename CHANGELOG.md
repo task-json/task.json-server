@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.1](https://github.com/task-json/task.json-server/compare/v2.0.0...v2.0.1) (2023-03-26)
+
+
+### Bug Fixes
+
+* regenerate package-lock.json ([fbd9dde](https://github.com/task-json/task.json-server/commit/fbd9dde81aae18479cfd3bffde85c5d868fb7794))
+* switch to ESM ([9f5733e](https://github.com/task-json/task.json-server/commit/9f5733efa989395a9b085daf34eeeb212a57dc03))
+
 ## [2.0.0](https://github.com/task-json/task.json-server/compare/v1.1.0...v2.0.0) (2023-03-26)
 
 

@@ -16,17 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import fastify from "./app";
-import { config } from "./utils/config";
+import app from "./app.js";
+import { config } from "./utils/config.js";
 
 const start = async () => {
   try {
-    await fastify.listen({
+    await app.listen({
 			host: config.host,
 			port: config.port
 		})
   } catch (err) {
-    fastify.log.error(err)
+    app.log.error(err)
     process.exit(1)
   }
 }

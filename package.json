@@ -2,6 +2,7 @@
   "name": "task.json-server",
   "version": "2.0.0",
   "description": "Sync server for task.json",
+  "type": "module",
   "scripts": {
     "dev": "tsx ./src/server.ts",
     "dev-https": "cd tests && caddy run",

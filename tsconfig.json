@@ -1,8 +1,9 @@
 {
 	"compilerOptions": {
-		"moduleResolution": "node",
+		"module": "ESNext",
+		"moduleResolution": "nodenext",
+		"target": "ESNext",
 		"esModuleInterop": true,
-		"target": "es2017",
 		"outDir": "./dist",
 		"sourceMap": true,
 		"strict": true,

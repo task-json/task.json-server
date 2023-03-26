@@ -18,9 +18,9 @@
 import Fastify from "fastify";
 import fastifyJwt from "@fastify/jwt";
 
-import { HttpError } from "./types/error";
-import { loadData, saveData, deleteData } from './utils/data';
-import { config } from "./utils/config";
+import { HttpError } from "./types/error.js";
+import { loadData, saveData, deleteData } from './utils/data.js';
+import { config } from "./utils/config.js";
 
 const fastify = Fastify({
 	logger: true

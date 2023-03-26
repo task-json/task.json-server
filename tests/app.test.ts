@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> 
  */
 
-import app from "../src/app";
+import app from "../src/app.js";
 
 // Use agent to persist sessions
 describe("Session API", () => {
@@ -67,6 +67,7 @@ describe("Data API", () => {
 	let token = "";
 	// Can be any string
 	const tj = "test-data"
+	let version = 0;
 
 	test("login", async () => {
 		const resp = await app.inject({
@@ -91,6 +92,7 @@ describe("Data API", () => {
 			}
 		});
 		expect(resp1.statusCode).toEqual(200);
+		++version;
 		
 		const resp2 = await app.inject({
 			method: "GET",
@@ -101,7 +103,7 @@ describe("Data API", () => {
 		});
 		expect(resp2.statusCode).toEqual(200);
 		// Empty response
-		expect(resp2.json()).toEqual({});
+		expect(resp2.json()).toEqual({ version });
 	});
 
 	test("upload", async () => {
@@ -112,10 +114,27 @@ describe("Data API", () => {
 				authorization: `Bearer ${token}`
 			},
 			payload: {
-				data: tj
+				data: tj,
+				version: -1
 			}
 		});
 		expect(resp.statusCode).toEqual(200);
+		++version;
+	});
+	
+	test("upload with conflict", async () => {
+		const resp = await app.inject({
+			method: "PUT",
+			url: "?",
+			headers: {
+				authorization: `Bearer ${token}`
+			},
+			payload: {
+				data: "",
+				version: version - 1
+			}
+		});
+		expect(resp.statusCode).toEqual(409);
 	});
 
 	test("download", async () => {
@@ -127,7 +146,7 @@ describe("Data API", () => {
 			}
 		});
 		expect(resp.statusCode).toEqual(200);
-		expect(resp.json()).toEqual({ data: tj });
+		expect(resp.json()).toEqual({ data: tj, version });
 	});
 
 	test("delete", async () => {
@@ -139,6 +158,7 @@ describe("Data API", () => {
 			}
 		});
 		expect(resp1.statusCode).toEqual(200);
+		++version;
 
 		const resp2 = await app.inject({
 			method: "GET",
@@ -149,6 +169,6 @@ describe("Data API", () => {
 		});
 		expect(resp2.statusCode).toEqual(200);
 		// Empty response
-		expect(resp2.json()).toEqual({});
+		expect(resp2.json()).toEqual({ version });
 	});
 });

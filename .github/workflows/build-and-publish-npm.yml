@@ -17,7 +17,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Build and publish package
-        working-directory: ./typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |

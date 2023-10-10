@@ -33,6 +33,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
+    "@fastify/cors": "^8.4.0",
     "@fastify/jwt": "^6.7.1",
     "fastify": "^4.15.0"
   }

@@ -17,6 +17,7 @@
 
 import Fastify from "fastify";
 import fastifyJwt from "@fastify/jwt";
+import fastifyCors from "@fastify/cors";
 
 import { HttpError } from "./types/error.js";
 import { loadData, saveData, deleteData } from './utils/data.js';
@@ -33,6 +34,7 @@ fastify.register(fastifyJwt, {
 	}
 });
 
+fastify.register(fastifyCors);
 
 // Create a session (log in)
 fastify.post("/session", {

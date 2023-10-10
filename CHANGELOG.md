@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.2](https://github.com/task-json/task.json-server/compare/v2.0.1...v2.0.2) (2023-10-10)
+
+
+### Bug Fixes
+
+* support cors ([7409076](https://github.com/task-json/task.json-server/commit/74090763d11f71615d89c526f8bc00d38135a267))
+
 ## [2.0.1](https://github.com/task-json/task.json-server/compare/v2.0.0...v2.0.1) (2023-03-26)
 
 
